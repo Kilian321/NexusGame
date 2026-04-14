@@ -869,7 +869,7 @@ HTML_TEMPLATE = '''<!DOCTYPE html>
       });
       const data = await res.json();
       if (!res.ok) {
-        showToast(data.error || 'Erreur lors de l\'ajout', true);
+        showToast(data.error || 'Erreur lors de l ajout', true);
         return;
       }
       allGames.unshift(data);
@@ -959,7 +959,7 @@ def featured_games():
     except (ValueError, TypeError):
         limit = 5
 
-    rows  = db.execute('SELECT * FROM games ORDER BY rating ASC').fetchall()
+    rows  = db.execute('SELECT * FROM games ORDER BY rating DESC ').fetchall()
     games = [dict(r) for r in rows]
     featured = games[:limit]
 

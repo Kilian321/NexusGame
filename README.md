@@ -77,6 +77,16 @@ locust -f tests/locust_gamestore.py --host=http://localhost:5000 --headless -u 2
 
 <!-- Pour chaque test libre : ce qu'il teste et pourquoi vous l'avez choisi. -->
 
+- Pour le test unitaire "test_creation_valide_retourne_201" j'ai choisis de crée une fixture pour avoir un jeu fictif réutilisable dans les autres test pour évité la duplication de code .
+- Pour le test unitaire "sans titre", "prix négatif", je me suis permis de les effacés afin de crée une suite de test a l'aide de "@pytest.mark.parametrize" qui va répondre au test "sans titre", "prix négatif", ainsi que 4 tests en +. J'ai vu ensuite quil y avait le "@pytest.mark.parametrize", donc jai effacé celuis-ci vu que mes tests ont déjà été faits auparavant
+- J'ai rajouté le test get_stats pour vérifier que la route répond correctement , l'enpoint n'a pas été testé auparavant
+- J'ai rajouté le test get_genre afin de vérifier que la route repond bien
+- J'ai rajouté le test search_par_titre afin de testé si l'enpoint renvoie bien une liste qui contient le titre de notre recherche,une fonctionnalité qui est quand meme principal pour un stutio qui distribue des jeux
+- J'ai rajouté le test create_game_sans_body_retourne_400 afin de vérifier si on peut crée un jeu sans body et retourne bien erreur 400
+
+- Pour le test test_featured_tries_par_rating_decroissant, la route api été paramétré en croissant , alors que le test est fait pour du décroissant , donc jai remplacer "ASC" par "DESC" pour convenir au test 
+
+
 ---
 
 ## Investigation de l'API
@@ -85,8 +95,11 @@ locust -f tests/locust_gamestore.py --host=http://localhost:5000 --headless -u 2
      Comportements inattendus, hypothèses, ce que vos tests révèlent. -->
 
 - Dans le fichier requirements.txt il y a une ligne pour "newman" alors que ce n'est pas un packet python ce qui a crée une erreur.
-- 
-
+- Dans app_gamestore il y a un problème de chargement des jeux sur le front 
+```bash
+ Initial : "showToast(data.error || 'Erreur lors de l\'ajout', true);"
+ Corection :  "showToast(data.error || 'Erreur lors de l ajout', true);"
+```
 ---
 
 ## Pipeline CI/CD
