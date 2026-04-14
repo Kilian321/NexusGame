@@ -122,7 +122,15 @@ locust -f tests/locust_gamestore.py --host=http://localhost:5000 --headless -u 2
  Corection :  "showToast(data.error || 'Erreur lors de l ajout', true);"
 ```
 - Avec les tests Postman jai découvert que la route delete renvoyé un code 200 dans le code alors que normalement ça doit etre un code 204
----
+```bash
+Avec Locust avec 1000 utilisateurs dont 50 par seconde 
+on peut remarqué que la route "DELETE" luis arrive de fail 3 , aucune autre route na fail . Le p95ms des routes est entre (700 et 1400ms en moyenne) avec un pick max de 4000ms envrion
+A partir de 1000 utilisateurs on peut voir dans "charts" un spike testing , cet a dire quon voit un pick d un seul coup sur le graphique.
+
+Apres plusieurs essai plus tard pour le meme nombre d utilisateurs , je genere des fails sur un peut toute les routes , ce qui montre que le seveur peut saturer tres fort avec 5000ms en moyenne par requete.
+
+```
+
 
 ## Pipeline CI/CD
 
@@ -142,5 +150,5 @@ locust -f tests/locust_gamestore.py --host=http://localhost:5000 --headless -u 2
  - Jai appris a écrire une serie de test unitaire fonctionnel avec un coverage de ~80%
  - J ai appris a crée une pipeline sur github alors que je n en avais jamais fais (a par le tp d hier)
  - J ai appris a écrire des tests dans postman et récupéré la collection .json
- -
+ - Générer des tests de performance sur des routes api, et ainsi voir les posibles limite.
 ```

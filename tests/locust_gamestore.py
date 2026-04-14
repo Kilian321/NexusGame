@@ -7,7 +7,7 @@ Lancement :
     locust -f tests/locust_gamestore.py --host=http://localhost:5000
     # Interface web : http://localhost:8089
 
-    # Sans interface (headless) :
+    # Sans interface (headless):
     locust -f tests/locust_gamestore.py --host=http://localhost:5000 \
            --headless -u 50 -r 5 --run-time 60s
 
@@ -84,8 +84,9 @@ class GameStoreUser(HttpUser):
         Utilisez response.failure() si quelque chose ne correspond pas
         à ce que la documentation de l'endpoint promet.
         """
-        # À compléter
-        self.client.get("/games/featured", name="/games/featured")
+        with self.client.get("/games/featured", catch_response=True) as response:
+            if response.status_code != 200:
+                response.failure(f"Featured échoué : {response.status_code}")
 
     @task(1)
     def creer_puis_supprimer_jeu(self):
