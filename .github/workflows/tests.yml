@@ -36,8 +36,12 @@ jobs:
 
       - name: Lancer les tests unitaires
         run: |
-          # TODO — Compléter la commande pytest
-          # Indice : pytest tests/test_unit.py -v --cov=app_gamestore --cov-report=html:reports/coverage --html=reports/unit.html
+          mkdir -p reports
+          pytest tests/test_unit.py -v \
+            --cov=app_gamestore \
+            --cov-report=html:reports/coverage \
+            --html=reports/unit_report.html \
+            --self-contained-html
           echo "TODO : compléter cette étape"
 
       - name: Uploader les rapports
@@ -46,14 +50,14 @@ jobs:
         with:
           name: unit-reports
           path: |
-            # TODO — reports/coverage/
-            # TODO — reports/unit.html
+            reports/coverage/
+            reports/unit.html
 
   # ── Job 2 : Tests d'intégration ───────────────────────────────────────────
   integration-tests:
     name: Tests d'intégration
     runs-on: ubuntu-latest
-    needs: unit-tests   # Ne tourne que si les tests unitaires passent
+    needs: unit-tests
 
     steps:
       - uses: actions/checkout@v4
@@ -94,14 +98,18 @@ jobs:
       - name: Démarrer l'API GameStore
         run: |
           pip install flask
-          # TODO — Démarrer l'API et attendre qu'elle soit prête
-          # Indice : python app_gamestore.py & puis vérifier avec curl
+          python app_gamestore.py &
+          sleep 5
+          curl --retry 5 --retry-delay 1 http://localhost:5000/health
           echo "TODO : démarrer l'API"
 
       - name: Lancer Newman
         run: |
-          # TODO — Lancer la collection Newman
-          # Indice : newman run tests/gamestore_collection.json ...
+          mkdir -p reports
+          newman run tests/gamestore_collection.json \
+            --env-var "base_url=http://localhost:5000" \
+            --reporters cli,htmlextra \
+            --reporter-htmlextra-export reports/newman_report.html
           echo "TODO : compléter cette étape"
 
   # ── Job 4 : Tests UI Playwright ────────────────────────────────────────────
@@ -119,18 +127,28 @@ jobs:
 
       - name: Installer les dépendances
         run: |
-          pip install flask pytest pytest-playwright playwright
-          playwright install chromium
+          pip install flask playwright pytest-playwright pytest-html
+          playwright install chromium --with-deps
 
       - name: Démarrer l'API GameStore
         run: |
-          # TODO — Démarrer l'API et attendre qu'elle soit prête
-          # Indice : python app_gamestore.py & puis vérifier avec curl
-          echo "TODO : démarrer l'API"
+          pip install flask
+          python app_gamestore.py &
+          sleep 2
+          curl --retry 5 --retry-delay 1 http://localhost:5000/health
 
       - name: Lancer les tests UI
         run: |
-          # TODO — Compléter
-          echo "TODO : compléter cette étape"
+          mkdir -p reports screenshots
+          pytest tests/test_ui.py -v \
+          --html=reports/playwright_report.html \
+          --self-contained-html
 
-      # TODO — Uploader les screenshots d'échec comme artefacts
+      - name: Uploader screenshots et rapport
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-reports
+          path: |
+            reports/playwright_report.html
+            screenshots/

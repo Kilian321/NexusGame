@@ -8,6 +8,8 @@ Lancement :
     pytest tests/test_integration.py -v -m integration
     pytest tests/test_integration.py -v --html=reports/integration.html
 """
+import subprocess
+
 import pytest
 import requests
 import time
@@ -24,16 +26,23 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 @pytest.fixture(scope="module")
 def api_url():
     """
-    TODO — Démarrer l'API GameStore en sous-processus réel,
-    attendre qu'elle soit prête, puis la stopper après les tests.
+       TODO — Démarrer l'API GameStore en sous-processus réel,
+      """
+    proc = subprocess.Popen(["python", "app_gamestore.py"])
+    base_url = "http://localhost:5000"
 
-    Indice : subprocess.Popen · time.sleep · proc.terminate()
-    """
-    # À compléter
-    # Note : tant que la fixture n'est pas implémentée,
-    # l'API doit tourner manuellement avant de lancer ces tests.
-    yield "http://localhost:5000"
+    time.sleep(2)
+    for _ in range(20):
+        try:
+            requests.get(f"{base_url}/health", timeout=1)
+            break
+        except requests.exceptions.RequestException:
+            time.sleep(1)
 
+    yield base_url
+
+    proc.terminate()
+    proc.wait()
 
 # ════════════════════════════════════════════════════════════════════════════════
 # SECTION 1 — Scénarios de bout en bout
