@@ -1,9 +1,352 @@
 {
   "info": {
+    "_postman_id": "ec685926-ca20-4f95-a115-de17ec21ba4e",
     "name": "NexusGame — GameStore API",
     "description": "Collection de tests API pour le projet final 2TES3.\nCette collection doit couvrir les scénarios critiques de l'API GameStore\net démontrer le chaînage de requêtes (id récupéré d'une réponse → utilisé dans la suivante).",
-    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "52657192",
+    "_collection_link": "https://go.postman.co/collection/52657192-ec685926-ca20-4f95-a115-de17ec21ba4e?source=collection_link"
   },
+  "item": [
+    {
+      "name": "1. Health Check",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "// TODO — Ajouter les assertions Postman :",
+              "pm.test('Status 200', () => pm.response.to.have.status(200));",
+              "pm.test('Status ok', () => pm.expect(pm.response.json().status).to.eql('ok'));"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/health",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "health"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "2. Lister les jeux",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {",
+              "    pm.response.to.have.status(200)",
+              "})",
+              "",
+              "pm.test(\"Response is an array\", function () {",
+              "    pm.expect(pm.response.json()).to.be.an('array')",
+              "    })",
+              "",
+              "pm.test(\"Tableau non vide\", function () {",
+              "    pm.expect(pm.response.json().length).to.be.at.least(1)",
+              "    })",
+              "",
+              "pm.test(\"Chaque jeu a les champs : id, title, genre, price, rating\", function () {",
+              "    const body = pm.response.json();",
+              "    [\"id\",\"title\",\"genre\",\"price\",\"rating\"].forEach(key => {",
+              "        pm.expect(body[0]).to.have.property(key)",
+              "        })    ",
+              "}) ",
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/games",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "games"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "3. Créer un jeu",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "// TODO — Vérifier status 201 et récupérer l'id pour le chaînage :",
+              "",
+              "pm.test(\"Status code is 201\", function () {",
+              "    pm.response.to.have.status(201)",
+              "})",
+              "",
+              "const id = pm.response.json().id;",
+              "",
+              "pm.collectionVariables.set('created_game_id', id);",
+              "",
+              "pm.test('ID présent', () => pm.expect(id).to.be.a('number'));",
+              "",
+              "",
+              "",
+              "",
+              "",
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"title\": \"NexusGame Test {{$timestamp}}\",\n  \"genre\": \"RPG\",\n  \"price\": 49.99,\n  \"rating\": 4.5,\n  \"stock\": 100\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/games",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "games"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "4. Récupérer le jeu créé",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "const game = pm.response.json();",
+              "",
+              "pm.test(\"Game id matches created game id\", function () {",
+              "    pm.expect(game.id).to.eql(Number(pm.collectionVariables.get(\"created_game_id\")));",
+              "});",
+              "",
+              "",
+              "pm.test(\"Game genre is RPG\", function () {",
+              "    pm.expect(game.genre).to.eql(\"RPG\");",
+              "});",
+              "",
+              "pm.test('Game title', () => {",
+              "    const body = pm.response.json();",
+              "    pm.expect(body[\"title\"]).to.includes(\"NexusGame Test\")",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/games/{{created_game_id}}",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "games",
+            "{{created_game_id}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "5. Mettre à jour le stock",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "// TODO — Vérifier status 200 et que le stock est bien mis à jour.",
+              "",
+              "pm.test(\"Status code is 200\", function () {",
+              "    pm.response.to.have.status(200)",
+              "})",
+              "",
+              "",
+              "pm.test(\"Stock is 0\", function () {",
+              "    pm.expect(pm.response.json().stock).to.equal(0)",
+              "    })"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"stock\": 0\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/games/{{created_game_id}}",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "games",
+            "{{created_game_id}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "6. Supprimer le jeu créé",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "// TODO — Vérifier que la suppression a réussi.",
+              "",
+              "pm.test(\"Status code is 204\", function () {",
+              "    pm.response.to.have.status(204)",
+              "})"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/games/{{created_game_id}}",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "games",
+            "{{created_game_id}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "7. Vérifier suppression (404)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "// TODO — Vérifier que le jeu n'existe plus (404).",
+              "pm.test(\"Status code is 404\", function () {",
+              "    pm.response.to.have.status(404)",
+              "})"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/games/{{created_game_id}}",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "games",
+            "{{created_game_id}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "8. [LIBRE] Scénario de votre choix",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "// À vous — ajoutez ici un scénario que vous jugez critique.",
+              "// Exemples : filtre par genre, recherche, stats, cas d'erreur...",
+              "// Documentez votre choix dans le README.",
+              "",
+              "pm.test(\"Le temps de réponse est inférieur à 200 ms\", function () {",
+              "    pm.expect(pm.response.responseTime).to.be.below(200);",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/games",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "games"
+          ]
+        }
+      },
+      "response": []
+    }
+  ],
   "variable": [
     {
       "key": "base_url",
@@ -14,179 +357,6 @@
       "key": "created_game_id",
       "value": "",
       "description": "ID du jeu créé — rempli automatiquement par le test de création"
-    }
-  ],
-  "item": [
-    {
-      "name": "1. Health Check",
-      "request": {
-        "method": "GET",
-        "url": "{{base_url}}/health"
-      },
-      "event": [
-        {
-          "listen": "test",
-          "script": {
-            "exec": [
-              "// TODO — Ajouter les assertions Postman :",
-              "// pm.test('Status 200', () => pm.response.to.have.status(200));",
-              "// pm.test('Status ok', () => pm.expect(pm.response.json().status).to.eql('ok'));"
-            ]
-          }
-        }
-      ]
-    },
-    {
-      "name": "2. Lister les jeux",
-      "request": {
-        "method": "GET",
-        "url": "{{base_url}}/games"
-      },
-      "event": [
-        {
-          "listen": "test",
-          "script": {
-            "exec": [
-              "// TODO — Vérifier :",
-              "// - status 200",
-              "// - réponse est un tableau",
-              "// - tableau non vide",
-              "// - chaque jeu contient les champs attendus"
-            ]
-          }
-        }
-      ]
-    },
-    {
-      "name": "3. Créer un jeu",
-      "request": {
-        "method": "POST",
-        "url": "{{base_url}}/games",
-        "header": [
-          {
-            "key": "Content-Type",
-            "value": "application/json"
-          }
-        ],
-        "body": {
-          "mode": "raw",
-          "raw": "{\n  \"title\": \"NexusGame Test {{$timestamp}}\",\n  \"genre\": \"RPG\",\n  \"price\": 49.99,\n  \"rating\": 4.5,\n  \"stock\": 100\n}"
-        }
-      },
-      "event": [
-        {
-          "listen": "test",
-          "script": {
-            "exec": [
-              "// TODO — Vérifier status 201 et récupérer l'id pour le chaînage :",
-              "// pm.test('Créé', () => pm.response.to.have.status(201));",
-              "// const id = pm.response.json().id;",
-              "// pm.collectionVariables.set('created_game_id', id);",
-              "// pm.test('ID présent', () => pm.expect(id).to.be.a('number'));"
-            ]
-          }
-        }
-      ]
-    },
-    {
-      "name": "4. Récupérer le jeu créé",
-      "request": {
-        "method": "GET",
-        "url": "{{base_url}}/games/{{created_game_id}}"
-      },
-      "event": [
-        {
-          "listen": "test",
-          "script": {
-            "exec": [
-              "// TODO — Vérifier que le jeu créé à l'étape 3 est bien récupérable.",
-              "// Utiliser created_game_id (chaînage).",
-              "// Vérifier le titre, le genre, le prix."
-            ]
-          }
-        }
-      ]
-    },
-    {
-      "name": "5. Mettre à jour le stock",
-      "request": {
-        "method": "PUT",
-        "url": "{{base_url}}/games/{{created_game_id}}",
-        "header": [
-          {
-            "key": "Content-Type",
-            "value": "application/json"
-          }
-        ],
-        "body": {
-          "mode": "raw",
-          "raw": "{\n  \"stock\": 0\n}"
-        }
-      },
-      "event": [
-        {
-          "listen": "test",
-          "script": {
-            "exec": [
-              "// TODO — Vérifier status 200 et que le stock est bien mis à jour."
-            ]
-          }
-        }
-      ]
-    },
-    {
-      "name": "6. Supprimer le jeu créé",
-      "request": {
-        "method": "DELETE",
-        "url": "{{base_url}}/games/{{created_game_id}}"
-      },
-      "event": [
-        {
-          "listen": "test",
-          "script": {
-            "exec": [
-              "// TODO — Vérifier que la suppression a réussi."
-            ]
-          }
-        }
-      ]
-    },
-    {
-      "name": "7. Vérifier suppression (404)",
-      "request": {
-        "method": "GET",
-        "url": "{{base_url}}/games/{{created_game_id}}"
-      },
-      "event": [
-        {
-          "listen": "test",
-          "script": {
-            "exec": [
-              "// TODO — Vérifier que le jeu n'existe plus (404).",
-              "// C'est la dernière étape du scénario de chaînage complet."
-            ]
-          }
-        }
-      ]
-    },
-    {
-      "name": "8. [LIBRE] Scénario de votre choix",
-      "request": {
-        "method": "GET",
-        "url": "{{base_url}}/games"
-      },
-      "event": [
-        {
-          "listen": "test",
-          "script": {
-            "exec": [
-              "// À vous — ajoutez ici un scénario que vous jugez critique.",
-              "// Exemples : filtre par genre, recherche, stats, cas d'erreur...",
-              "// Documentez votre choix dans le README."
-            ]
-          }
-        }
-      ]
     }
   ]
 }

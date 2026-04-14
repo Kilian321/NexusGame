@@ -258,7 +258,7 @@ def delete_game(game_id):
         return jsonify({'error': f'Jeu {game_id} introuvable'}), 404
     db.execute('DELETE FROM games WHERE id = ?', (game_id,))
     db.commit()
-    return jsonify({'deleted': True, 'id': game_id}), 200
+    return jsonify({'deleted': True, 'id': game_id}), 204
 
 
 # ── Endpoints de statistiques et recherche ──────────────────────────────────

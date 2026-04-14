@@ -204,7 +204,7 @@ class TestGameCRUD:
         game_id = r_create.get_json()["id"]
 
         r_delete = client.delete(f'/games/{game_id}')
-        assert r_delete.status_code == 200
+        assert r_delete.status_code == 204
 
         r_get = client.get(f'/games/{game_id}')
         assert r_get.status_code == 404

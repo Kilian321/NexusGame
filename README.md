@@ -68,10 +68,28 @@ locust -f tests/locust_gamestore.py --host=http://localhost:5000 --headless -u 2
 ### Pyramide de tests adoptée
 
 <!-- Quelle pyramide avez-vous choisie et pourquoi ? -->
+```bash
+  J ai choisis la piramide de test avec les tests unitaire en grande majorité (70-80%), 
+  ensuite les tests d intégration avec environ (10-15%),
+  et pour finir les tests End to End avec envrion (5%)
+  J ai choisis cela car nous sommes plutot sur une api donc cette piramide favorise les tests sur la logique métier 
+
+```
+
 
 ### Pipeline CI vs local
 
 <!-- Qu'est-ce qui tourne en CI, qu'est-ce qui reste en local, et pourquoi ? -->
+#### Ce qui tourne en CI :
+- Les tests unitaires, afin de voir si les différentes fonctionnalités fonctionne unitairement
+- Les tests d'intégrations , pour vérifier que les différents enchainement d'action focntionne avec l'api
+- Les tests Newman pour tester les tests postman automatiquement
+- Les test Playwright pour vérifier que les intéractions sur le front marche correctement
+
+#### Ce qui tourne en local :
+
+- les test Locust , car ce sont des tests de charge, plus longs a exécuter 
+- Les tests OWASP
 
 ### Mes choix libres
 
@@ -86,6 +104,7 @@ locust -f tests/locust_gamestore.py --host=http://localhost:5000 --headless -u 2
 
 - Pour le test test_featured_tries_par_rating_decroissant, la route api été paramétré en croissant , alors que le test est fait pour du décroissant , donc jai remplacer "ASC" par "DESC" pour convenir au test 
 
+- Pour le test libre avec postamn jai fais un test qui vérifie que le temps de réponse ne dépasse pas 200ms pour vérifier que la requete ne prenent pas trop de temps pour arrivé jusqua l utilisateur qui pourrait perdre de l interet si la requete est trop longue
 
 ---
 
@@ -100,14 +119,26 @@ locust -f tests/locust_gamestore.py --host=http://localhost:5000 --headless -u 2
  Initial : "showToast(data.error || 'Erreur lors de l\'ajout', true);"
  Corection :  "showToast(data.error || 'Erreur lors de l ajout', true);"
 ```
+- Avec les tests Postman jai découvert que la route delete renvoyé un code 200 dans le code alors que normalement ça doit etre un code 204
 ---
 
 ## Pipeline CI/CD
 
 <!-- État de votre pipeline sur GitHub Actions. -->
+```bash
+  A ce moment la , j ai crée la pipeline les tests unitaires passe ,
+   je n est pas encore fais pour les tests d intégration car pour l instant je préfére faire le reste pour y revenir si jai le temps , pour les jobs Newman et Playwright la pipeline passe.
+
+```
 
 ---
 
 ## Ce que j'ai appris
 
 <!-- Optionnel. -->
+```bash
+ - Jai appris a écrire une serie de test unitaire fonctionnel avec un coverage de ~80%
+ - J ai appris a crée une pipeline sur github alors que je n en avais jamais fais (a par le tp d hier)
+ - J ai appris a écrire des tests dans postman et récupéré la collection .json
+ -
+```
