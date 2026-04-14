@@ -72,7 +72,7 @@ jobs:
 
       - name: Lancer les tests d'intégration
         run: |
-          # TODO — Compléter
+          pytest tests/test_integration.py -v -m integration
           echo "TODO : compléter cette étape"
 
   # ── Job 3 : Tests Newman ───────────────────────────────────────────────────

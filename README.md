@@ -150,11 +150,13 @@ Apres plusieurs essai plus tard pour le meme nombre d utilisateurs , je genere d
 
 
 ## Pipeline CI/CD
-
+``` Lien pipeline : https://github.com/Kilian321/NexusGame/actions/runs/24405756458```
 <!-- État de votre pipeline sur GitHub Actions. -->
 ```bash
   A ce moment la , j ai crée la pipeline les tests unitaires passe ,
-   je n est pas encore fais pour les tests d intégration car pour l instant je préfére faire le reste pour y revenir si jai le temps , pour les jobs Newman et Playwright la pipeline passe.
+  je n est pas encore fais pour les tests d intégration car pour l instant je préfére faire le reste pour y revenir si jai le temps , pour les jobs Newman et Playwright la pipeline passe.
+  J ai terminer la pipeline des tests d intégration et elle marche .
+   
 
 ```
 
