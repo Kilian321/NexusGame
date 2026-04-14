@@ -106,6 +106,8 @@ locust -f tests/locust_gamestore.py --host=http://localhost:5000 --headless -u 2
 
 - Pour le test libre avec postamn jai fais un test qui vérifie que le temps de réponse ne dépasse pas 200ms pour vérifier que la requete ne prenent pas trop de temps pour arrivé jusqua l utilisateur qui pourrait perdre de l interet si la requete est trop longue
 
+- Pour le test libre avec Playwright jai fait un test qui permet de vérifier que la modal de formulaire puisse bien ce fermer , afin d évité de resté bloqué dans la modal sans pourvoir rien faire 
+
 ---
 
 ## Investigation de l'API

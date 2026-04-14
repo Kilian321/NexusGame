@@ -36,30 +36,32 @@ class TestPageBasique:
     """
 
     def test_page_se_charge(self, page: Page):
-        """
-        TODO — Vérifier que la page principale charge correctement.
-        1. Naviguer vers BASE_URL
-        2. Vérifier le titre : page.title() == "GameStore"
-        3. Vérifier que [data-testid=game-list] est visible
-        """
-        # À compléter
-        pass
+        page.goto(BASE_URL)
+        assert page.title() == "GameStore"
+        expect(page.locator("[data-testid=game-list]")).to_be_visible()
 
     def test_compteur_jeux_positif(self, page: Page):
         """
         TODO — Vérifier que le compteur de jeux affiche un nombre > 0.
         [data-testid=game-count] doit contenir un nombre extrait du texte.
         """
-        # À compléter
-        pass
+        page.goto(BASE_URL)
+
+        compteur = page.locator('[data-testid="game-count"]').inner_text()
+        nombre = int(compteur.split(" ")[0])
+        assert nombre > 0
 
     def test_annuler_ferme_le_modal(self, page: Page):
         """
         TODO — Ouvrir le formulaire d'ajout, cliquer Annuler,
         vérifier que [data-testid=add-game-modal] n'est plus visible.
         """
-        # À compléter
-        pass
+        page.goto(BASE_URL)
+
+        page.locator('[data-testid="add-game-btn"]').click()
+        page.locator('[data-testid="cancel-btn"]').click()
+
+        assert not page.locator('[data-testid="add-game-modal"]').is_visible()
 
 
 # ════════════════════════════════════════════════════════════════════════════════
@@ -77,34 +79,50 @@ class TestAvecPOM:
         """
         TODO — Instancier HomePage, naviguer, vérifier game_list visible.
         """
-        # À compléter
-        pass
+        home = HomePage(page)
+        home.navigate()
+
+        assert page.title() == "GameStore"
+
+        expect(home.game_list).to_be_visible()
 
     def test_ajouter_jeu_via_pom(self, page: Page):
-        """
-        TODO — Via HomePage + AddGameModal :
-        1. Naviguer
-        2. Ouvrir le formulaire
-        3. Remplir et soumettre
-        4. Vérifier que le titre apparaît dans game_list
-        """
-        # À compléter
-        pass
+        home = HomePage(page)
+        modal = AddGameModal(page)
+
+        home.navigate()
+        home.open_add_form()
+
+        expect(modal.modal).to_be_visible()
+
+        modal.fill_and_submit("Jeu POM Test", "Action", 20)
+
+        expect(home.game_list).to_contain_text("Jeu POM Test")
 
     def test_recherche_filtre_resultats(self, page: Page):
-        """
-        TODO — Rechercher "Zelda", vérifier que la première carte contient "Zelda".
-        """
-        # À compléter
-        pass
+        home = HomePage(page)
+
+        home.navigate()
+        home.search("Zelda")
+
+        first_card = home.get_game_cards().first
+
+        expect(first_card).to_contain_text("Zelda")
 
     def test_filtre_genre_rpg(self, page: Page):
         """
         TODO — Filtrer par "RPG", vérifier que toutes les cartes visibles
-        ont [data-testid=game-genre] contenant "RPG".
         """
-        # À compléter
-        pass
+        page.goto(BASE_URL)
+
+        page.locator('[data-testid="genre-filter"]').select_option("RPG")
+
+        genres = page.locator('[data-testid="game-genre"]').all_text_contents()
+
+        for genre in genres:
+            assert "RPG" in genre
+
+
 
 
 # ════════════════════════════════════════════════════════════════════════════════
@@ -117,4 +135,18 @@ class TestChoixLibresUI:
     Ajoutez ici les parcours utilisateur que vous jugez critiques.
     Documentez vos choix dans le README.
     """
-    pass
+
+    def test_pom_annuler_formulaire(self,page: Page):
+        home = HomePage(page)
+        modal = AddGameModal(page)
+
+        home.navigate()
+        home.open_add_form()
+
+        expect(modal.modal).to_be_visible()
+
+        modal.cancel()
+
+        expect(modal.modal).not_to_be_visible()
+
+
