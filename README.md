@@ -131,6 +131,23 @@ Apres plusieurs essai plus tard pour le meme nombre d utilisateurs , je genere d
 
 ```
 
+```bash
+    Avec OWASP ZAP :
+    - Il y a au total 10 alertes trouvé 
+      - 2 medium
+      - 6 low
+      - 2 Informational
+      
+    L alerte quon retrouve le plus est "Cross-Origin-Embedder-Policy"
+    J ai rajouté les headers de sécurité dans le fichier app_gamestores.py
+    
+    - Après modification :
+      - 1 medium
+      - 5 low
+      - 2 Informational
+    
+```
+
 
 ## Pipeline CI/CD
 
@@ -151,4 +168,5 @@ Apres plusieurs essai plus tard pour le meme nombre d utilisateurs , je genere d
  - J ai appris a crée une pipeline sur github alors que je n en avais jamais fais (a par le tp d hier)
  - J ai appris a écrire des tests dans postman et récupéré la collection .json
  - Générer des tests de performance sur des routes api, et ainsi voir les posibles limite.
+ - J ai découvert comment scan les sécurités des mon api avec OWASP ZAP
 ```
